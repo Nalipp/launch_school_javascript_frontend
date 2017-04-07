@@ -1,4 +1,4 @@
-var index = 0;
+var index = 1;
 var people = [];
 
 var son = {
@@ -35,7 +35,7 @@ var friend = {
 people = {
   collection: [],
   information: function (person) {
-    console.log(person.firstName + ' ' + person.lastName);
+    console.log(person.id + ': ' + person.firstName + ' ' + person.lastName);
   },
 
   rollCall: function() {
@@ -55,8 +55,17 @@ people = {
     index += 1;
   },
 
-  remove: function (person) {
-    var index = this.getIndex(person);
+  getIndex: function (id) {
+    var index = -1;
+    
+    for (var i = 0; i < this.collection.length; i++) {
+      if (this.collection[i].id === id) index = i; 
+    }
+    return index;
+  },
+
+  remove: function (id) {
+    var index = this.getIndex(id);
 
     if (index === -1) {
       return;
@@ -65,26 +74,31 @@ people = {
     this.collection.splice(index, 1);
   },
 
-  getIndex: function (person) {
-    var index = -1;
+  getId: function (person) {
+    var id = -1;
     this.collection.forEach(function(collection, i) {
       if (collection.firstName === person.firstName && 
           collection.lastName === person.lastName) {
-        index = i;
+        id = collection.id;
       }
     });
-    return index;;
+    return id;;
   },
 
   isInvalidPerson: function(person) {
-    return typeof(person.firstName) !== 'string' && typeof(person.lastName) !== 'string';
+    return typeof(person.firstName) !== 'string' || typeof(person.lastName) !== 'string';
   },
 
-  get: function(person) {
-    if (this.isInvalidPerson(person)) {
+  get: function(id) {
+    if (this.getId === -1) {
       return;
-    } 
-    return this.collection[this.getIndex(person)];
+    }
+    for (var i = 0; i < this.collection.length; i++) {
+      
+      if (this.collection[i].id === id) {
+        this.information(this.collection[i]);
+      }
+    }
   },
 
   getObjectById(id) {
@@ -101,6 +115,8 @@ people = {
     this.getObjectById(id)[0][key] = value;
   }
 }
+
+
 people.add(me);
 people.add(son);
 people.add(wife);
@@ -109,16 +125,25 @@ people.add(mother);
 people.add(friend);
 // people.rollCall();
 
-people.update(3, 'lastName', 'Arther');
-people.rollCall();
+// people.update(3, 'lastName', 'Arther');
+// people.rollCall();
 
-// people.update({firstName: 'Tim', lastName: 'Zach', music: 'Outlaw coutry from the 70s and 80s'});
-// console.log(people.collection[people.getIndex({firstName: 'Tim', lastName: 'Zach'})])
+// console.log(people.collection.forEach(function(person) {console.log(person.id); }));
 
-// update
-//   -get person by id
-//   -or create new person with passed person object
-//   -or replace existing person with passed person object
-// add
+// console.log(people.get(2));
 
-
+// collection
+// console.log(people.collection);
+// rollcall()
+// console.log(people.rollCall());
+// add(person)
+// people.add({firstName: 'Tad', lastName: 'Albricht'})
+// var id = people.getId({firstName: 'Dennis', lastName: 'Lipp'})
+// var person = {firstName: 'Tad', lastName: 'Albricht'};
+// // people.remove(id)
+// // getId(person)
+// console.log(people.isInvalidPerson(person));
+// console.log(people.get(2));
+// console.log(people.getObjectById(6));
+// people.update(7, 'lastName', 'Albright');
+// people.rollCall();

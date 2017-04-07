@@ -9,13 +9,18 @@ var invoices = {
       return sum += obj.amount; 
     }, 0)
   },
+  totalPaid: function() {
+    return this.paid.reduce(function(sum, obj) {
+      return sum += obj.amount; 
+    }, 0)
+  },
   payInvoice: function(client) {
     var unpaid = [];
     for (var i = 0; i < this.unpaid.length; i++) {
       if (client.name === this.unpaid[i].name) {
-        this.paid.push(client);
+        this.paid.push(this.unpaid[i]);
       } else {
-        notFound.push(client);
+        unpaid.push(this.unpaid[i]);
       }
     }
     this.unpaid = unpaid;
@@ -26,8 +31,13 @@ invoices.add('Due North Development', 250);
 invoices.add('Moonbeam Interactive', 187.50);
 invoices.add('Slough Digital', 300);
 
-invoices.payInvoice({name: 'Moonbeam Interactive'});
-console.log(invoices.paid);
+invoices.payInvoice({name: 'Due North Development'});
+invoices.payInvoice({name: 'Slough Digital'});
+console.log(invoices.paid.forEach(function(value) {console.log(value);}) );
+console.log(invoices.unpaid.forEach(function(value) {console.log(value);}) );
+
+console.log(invoices.totalPaid());
+console.log(invoices.totalDue());
 
 // console.log(invoices);
 // console.log(invoices.totalDue());

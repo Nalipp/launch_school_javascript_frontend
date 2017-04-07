@@ -8,8 +8,10 @@
 *************************************************************************
 *objects and methods ( this )
 
-  methods are functions with a receiver
-  functions do not have a receiver specified
+  methods   => functions with a receiver
+  functions => no reciever
+  
+  what is the difference between function invocation and method invocation?
 
   object methods are just properties that have a value set to a function
 
@@ -18,7 +20,8 @@
 
   *************************************************************************
   this
-   
+
+    'this' is automatically available to methods 
     'this' is a reverence to the object itself
     'this' allows you to access and modify the properties of the object
 
@@ -39,6 +42,23 @@
 
     car.stop();
     console.log(car);  // Object {running: false}
+
+
+    running, start, stop all have the context of the global window object (car)
+      and can access that global window object with 'this'
+      if the global window object name (car) changes, 
+        the methods will retain access to the changed name through 'this'
+
+
+    *************************************************************************
+    difference between function and method invocations
+    
+      car.start(), car.stop() are method invocations
+        car is the receiver
+
+      car.start;                     // method invocation
+      var startingCar = car.start;   // var to point at the method invocation
+      startingCar()                  // funciton invocation
 
 
 
