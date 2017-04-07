@@ -1,0 +1,45 @@
+*************************************************************************
+  front_end_javascript_master_notes
+*************************************************************************
+*objects and methods ( this )
+
+
+
+*************************************************************************
+*objects and methods ( this )
+
+  methods are functions with a receiver
+  functions do not have a receiver specified
+
+  object methods are just properties that have a value set to a function
+
+  every function is called with a context
+
+
+  *************************************************************************
+  this
+   
+    'this' is a reverence to the object itself
+    'this' allows you to access and modify the properties of the object
+
+    var car = {
+      running: false,
+
+      start: function() {
+        this.running = true;
+      },
+
+      stop: function() {
+        this.running = false;
+      }
+    }
+
+    car.start();
+    console.log(car);  // Object {running: true}
+
+    car.stop();
+    console.log(car);  // Object {running: false}
+
+
+
+
