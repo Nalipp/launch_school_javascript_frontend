@@ -1,0 +1,18 @@
+document.querySelector()            // select first element in the document by name
+document.querySelectorAll()         // select all elements in the document by name
+
+document.toString()                 // get the object type (inside the console)
+
+document.nodeName                   // accessing dom propertys by name
+document.nodeType                   // accessing dom propertys by value
+document.nodeValue                  // null  (elements don't have values) 
+document.childNodes[3].nodeValue    // string of text inside the <p></p> 
+
+document.textContent                // null
+document.childNodes[3].textContent  // accessing the text inside a non-element node
+
+
+
+
+
+

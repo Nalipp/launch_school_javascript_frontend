@@ -14,6 +14,26 @@
 *higher order functions
 *closures and private data
 
+missing after lost backup
+  Closures and Private Data	
+	Objects and Closures	
+	Garbage Collection	
+	How Closures Affect Garbage Collection	
+	Partial Function Application	
+	Immediately Invoked Function Expressions	
+	Creating a Private Scope with an IIFE	
+  //
+  The Document Object Model (DOM)	
+
+*A Hierarchy of Nodes	
+*Node Properties	
+
+	Determining the Type of a Node	
+	Inheritance and Finding Documentation	
+  traversing Nodes
+
+*element attributes
+
 
 *************************************************************************
 *objects and methods ( this )
@@ -731,4 +751,137 @@ call and apply
 
 
 *************************************************************************
-*closures and private data
+*************************************************************************
+*************************************************************************
+
+*************************************************************************
+*A Hierarchy of Nodes	
+  The browser creates a body and head (as well as other corrections) if they aren't specified in the original html
+  the dom (which is accessable through dev tools) will reflect any changes made by the broswer
+
+  the dom is a hiearchy of nodes have object types that include elements, comments and text
+
+  three most common types of dom objects
+
+    1. elements     => example: html, p tags  (dom objects that include multiple element(tag) types)
+    2. text nodes   => represent text (this also includes text nodes which are empty)
+      -whitespace is created when a new line is made in the html (for example between <p></p> and <h1></h1> tags
+      -whitespace text nodes are not displayed in html or visually in the brower but still count as nodes
+    3. comments     => represent html comments
+      (various less important types)
+
+  selecting a node
+    document.querySelector('p')  //  <p>a peom by john dunbar</p>
+
+  accessing object type
+    document.toString()          // "[object HTMLDocument]"
+
+  dom nodes have propertiy names
+    document.nodeName            // "document" 
+    p.nodeName                   // 'P'
+
+  dom nodes have propertiy types
+    document.nodeType            // 9
+    p.nodeType                   // 1
+
+    property types relate to object type
+                          value
+      Node.ELEMENT_NODE	  1	     An Element representing an HTML tag
+      Node.TEXT_NODE    	3	     A Text node
+      Node.COMMENT_NODE 	8	     A Comment node
+      Node.DOCUMENT_NODE	9	     A Document node
+
+  dom nodes have propertiy values (elements don't hold a value, objects with text type do)
+    document.nodeValue           // null
+    p.nodeValue                  // null
+    p.childNodes[0].nodeValue    // 'a peom by john dunbar'  (value of a specific node)
+
+  accessing text property values
+    document.textContent         // null
+    p.textContent                // 'a peom by john dunbar'
+                                 // textContent selects all text nodes in the element including whitespace
+    p.textContent.trim()         // whitespace can be removed with .trim()
+    
+
+*************************************************************************
+*Node Properties	
+
+  All dom elements are nodes (elements, text, comments)
+  they inherit their specific type from Nodes above them
+    -they have their own properties and methods along with the properties and methods they inherit from Nodes above
+
+  elemnts also have more specific element types(tags)
+    <p>   => HTMLParagraphElement
+    <div> => HTMLDivElement
+
+
+  more node types
+  EventTarget   => provides event-handling allowing ineraction 
+  Node          => provides common behavior
+    Text        => main subtypes (hold text)
+    Element     => main subtypes (represent html tags from the original html document)
+
+
+
+*************************************************************************
+*************************************************************************
+*************************************************************************
+
+
+*************************************************************************
+*element attributes
+
+  getting and setting attributes
+
+    var p = document.querySelector('p');
+    p                                    // <p class="intro" id="simple">...</p>
+    p.hasAttribute('id')                 // true
+    p.getAttribute('id')                 // 'simple'
+    p.setAttribute('id', 'complex');     
+    p                                    // <p class="intro" id="complex">...</p>
+
+  attribute properties
+
+    javaScript exposes the following attributes of the DOM property 
+      id, name, title, value
+
+      var p = document.querySelector('p');
+      p                 // <p class="intro" id="simple">...</p>
+      p.id              // 'simple'
+      p.className       // 'intro'    (class is a reserved name in javaScript so use className instead)
+
+      p.name            // undefined  (usually invalid)    
+      p.title           // undefined 
+      p.value           // undefined  (usually invalid)
+
+      p.id = 'complex'  
+      p.id              // 'complex'
+      p                 // <p class="intro" id="complex">...</p>
+    
+
+  working with classLists
+    p                  // <p class="intro" id="simple">...</p>
+    p.className        // 'intro'
+    p.classList        // ['intro']  (returns an Array-like domTokenList object
+    
+      the following functions work on a domTokenList object
+        add(name)      // adds a new name to classList
+        remove(name)   // removes an existing name from classList
+        toggle(name)   // if the name exists removes it from classList and returns false (current status of the name)
+                          if the name doesn't exist adds it to classList and returns true
+        contains(name) // returns if the name is in the classList
+        length         // returns the length of the class list
+
+  style
+    you can also access and change style properties on an element
+    style is not usually used, more common is toggling, adding or removing access to css properties
+
+    p.style              // {alignContent: "", alignItems: "", alignSelf: "", alignmentBaseline: "", all: ""…}
+                         // this actually returns all of the possible style properties as empty
+    p.style.background   // ''
+    p.style.background = 'green'  (the dom is updated and the screen show a green <p> background)
+    p.style.background = null
+
+    h1.style.lineHeight = '90px'  (camel case must be used for css hyphend properties)
+
+

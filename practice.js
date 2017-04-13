@@ -1,10 +1,16 @@
-var arr = 'hello spiderman'.split('');
+//// walk() calls the Function callback once for each node
+function walk(node, callback) {
+  // do something with node
+  callback(node);
 
-function recursion(arr) {
-  if (arr.length > 0) {
-    console.log(arr[0]);
-    recursion(arr.slice(1));
+  // for each child node
+  for (var i = 0; i < node.childNodes.length; i++) {
+    // recursively call walk()
+    walk(node.childNodes[i], callback);
   }
 }
 
-recursion(arr);
+// log the nodeName of every node
+walk(document.body, function(node) {
+  console.log(node.nodeName);
+});
