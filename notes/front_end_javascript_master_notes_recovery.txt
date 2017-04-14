@@ -27,10 +27,8 @@ missing after lost backup
 
 *A Hierarchy of Nodes	
 *Node Properties	
-
-	Determining the Type of a Node	
-	Inheritance and Finding Documentation	
-  traversing Nodes
+*Determining the Type of a Node	
+*traversing Nodes
 
 *element attributes
 
@@ -805,6 +803,7 @@ call and apply
 
 *************************************************************************
 *Node Properties	
+*Determining the Type of a Node	
 
   All dom elements are nodes (elements, text, comments)
   they inherit their specific type from Nodes above them
@@ -814,16 +813,70 @@ call and apply
     <p>   => HTMLParagraphElement
     <div> => HTMLDivElement
 
-
   more node types
   EventTarget   => provides event-handling allowing ineraction 
   Node          => provides common behavior
     Text        => main subtypes (hold text)
     Element     => main subtypes (represent html tags from the original html document)
 
+  accessing node type
+    1. inside the console use     
+         document.toString();                       // "[object HTMLDocument]" 
+         p.toString();                              // "[object HTMLParagraphElement]"
+
+         var a = document.querySelector('a');       (dosen't work with anchor tags thoug)
+           a.toString()                             // 'www.google.com'  (actually returns the URL in the anchor)
+           document.querySelector('a').constructor  // function HTMLAnchorElement() { [native code] } 
+
+    2. inside code use instanceof
+         p instanceof HTMLParagraphElement;         // true
+         p instanceof HTMLAnchorElement;            // false
+
+       you an also use broader types
+         p instanceof HTMLElement;                  // true
+         p instanceof Element;                      // true
+         p instanceof Node;                         // true
+         p instanceof SVGElement;                   // false
 
 
 *************************************************************************
+*traversing Nodes
+  nodes are connected to each other through properties that point from one node to the next in defined relationships
+
+  childNodes      => property that returns a live collection of all nodes beneath the parent  or null
+  parentNode      => each child has a parent node property that points back to the parent     or null 
+  firstChild      => equivelent to childNodes[0]                                              or null
+  lastChild       => equivelent to childNodes[childNodes.length -1]                           or null
+
+  others
+  nextSibling     => equivelent to childNodes[n+1]                                            or null 
+  previousSibling => equivelent to childNodes[n-1]                                            or null 
+
+
+  walk the dom
+
+      generic recursive function 
+
+        function recurseAndLog(array) {
+          if (array.length > 0) {
+            console.log(array[0]);
+            recurseAndLog(array.slice(1));
+          }
+        }
+
+    when walking the dom we use dom nodes instead of an array
+
+      example:
+
+        function walk(node) {
+          console.log(node.firstChild)
+        }
+
+        walk(document.body);
+
+    
+
+
 *************************************************************************
 *************************************************************************
 

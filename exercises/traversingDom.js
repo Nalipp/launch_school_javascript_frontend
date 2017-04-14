@@ -1,4 +1,4 @@
-console.log(document);
+
 // function walk(node, callback) {
 //   callback(node);
 

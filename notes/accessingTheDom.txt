@@ -1,15 +1,28 @@
-document.querySelector()            // select first element in the document by name
-document.querySelectorAll()         // select all elements in the document by name
+document.querySelector()                // select first element in the document by name
+document.querySelectorAll()             // select all elements in the document by name
 
-document.toString()                 // get the object type (inside the console)
+document.toString()                     // get the object type (inside the console)
+document.querySelector('a').constructor // function HTMLAnchorElement() { [native code] } (used with anchor elements)
 
-document.nodeName                   // accessing dom propertys by name
-document.nodeType                   // accessing dom propertys by value
-document.nodeValue                  // null  (elements don't have values) 
-document.childNodes[3].nodeValue    // string of text inside the <p></p> 
+p instanceof HTMLParagraphElement;      // access boolean value
+p instanceof Node;                      // broader element type Node
+p instanceof Element;                   // broader element type Element
 
-document.textContent                // null
-document.childNodes[3].textContent  // accessing the text inside a non-element node
+document.nodeName                       // accessing dom propertys by name
+document.nodeType                       // accessing dom propertys by value
+document.nodeValue                      // null  (elements don't have values) 
+document.childNodes[3].nodeValue        // string of text inside the <p></p> 
+
+document.textContent                    // null
+document.childNodes[3].textContent      // accessing the text inside a non-element node
+
+div.childNodes                            // used for traversing the DOM
+div.parentNodes
+div.firstChild                            // div.childNodes[0]
+div.lastChild                             // div.childNodes[childNodes -1]
+div.nextSibling                           // div.childNodes[n+1]
+div.nextSibling                           // div.childNodes[n-1]
+
 
 
 
