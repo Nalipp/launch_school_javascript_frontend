@@ -1,31 +1,96 @@
-document.querySelector()                // select first element in the document by name
-document.querySelectorAll()             // select all elements in the document by name
+**************************************************************************
+DOM
+**************************************************************************
 
-document.toString()                     // get the object type (inside the console)
-document.querySelector('a').constructor // function HTMLAnchorElement() { [native code] } (used with anchor elements)
-
-p instanceof HTMLParagraphElement;      // access boolean value
-p instanceof Node;                      // broader element type Node
-p instanceof Element;                   // broader element type Element
-
-document.nodeName                       // accessing dom propertys by name
-document.nodeType                       // accessing dom propertys by value
-document.nodeValue                      // null  (elements don't have values) 
-document.childNodes[3].nodeValue        // string of text inside the <p></p> 
-
-document.textContent                    // null
-document.childNodes[3].textContent      // accessing the text inside a non-element node
-
-div.childNodes                            // used for traversing the DOM
-div.parentNodes
-div.firstChild                            // div.childNodes[0]
-div.lastChild                             // div.childNodes[childNodes -1]
-div.nextSibling                           // div.childNodes[n+1]
-div.nextSibling                           // div.childNodes[n-1]
+*walking the dom
+*node properties and attributes
+*selecting elements (build in methods)
 
 
 
+**************************************************************************
+*walking the dom
+
+  walk the dom with function similar to forEach()
+
+    function walk(node, callback) {
+      callback(node);  
+
+      for (var i = 0; i < node.childNodes.length; i++) {
+        walk(node.childNodes[i], callback);
+      }
+    }
+
+    walk(document.body, function(node) {                 
+      console.log(node.nodeName);                        
+    });
 
 
+**************************************************************************
+*node properties and attributes
+
+  (brief intro to selecting elements)
+  document.querySelector()                  // select first element in the document by name
+  document.querySelectorAll()               // select all elements in the document by name
+
+  a = document.querySelector('a')
+  p = document.querySelector('p')
+  div = document.querySelector('div')
+
+  childNodes
+  document.childNodes                       // lists all child nodes
+  document.childNode.length                 // length of child nodes collection
+  document.firstChild                       // access first child node
+  document.childNodes[1]                    // access second child node
+  document.lastChild                        // access last child node
+  document.childNodes[document.childNodes.length -2]   // access second to last child node
+
+  document.toString()                       // get the object type (inside the console)
+  a.constructor                             // (for anchor elements) function HTMLAnchorElement() { [native code] }
+  a.constructor.name                        // 'HTMLAnchorElement'  (nodeName is easier)
+  p.constructor.name                        // 'HTMLParagraphElement'
+
+  p instanceof HTMLParagraphElement;        // access boolean value
+  p instanceof Node;                        // broader element type Node
+  p instanceof Element;                     // broader element type Element
+
+  document.nodeName                         // accessing dom propertys by name
+  document.nodeType                         // accessing dom propertys by value
+  document.nodeValue                        // null  (elements don't have values) 
+  document.childNodes[3].nodeValue          // string of text inside the <p></p> 
+
+  document.textContent                      // concats all of the content in the elemtens child nodes into string
+  document.childNodes[3].textContent        // accessing the text inside a non-element node
+
+  div.childNodes                            // used for traversing the DOM
+  div.parentNodes
+  div.firstChild                            // div.childNodes[0]
+  div.lastChild                             // div.childNodes[childNodes -1]
+  div.nextSibling                           // div.childNodes[n+1]
+  div.nextSibling                           // div.childNodes[n-1]
+
+  p.hasAttribute('id')                      // returns boolean value
+  p.getAttribute('id')                      // returns id name
+  p.setAttribute('id', 'complex');          // sets id name (in this case to 'complex')
+  p.id = 'complex'                          // alternative way to set name of id 
+  p.className                               // class is a reserved work in javascript so use className
+
+  p.classList                               // returns an array like object of all the names in a class
+  p.classList.add('simple')                 // add an aditional class name to classList
+  p.classList.remove('simple')              // remove a class name from classList
+  p.classList.toggle('complex')             // adds the class name if it not present, removes it if it is present 
+  p.classList.contains('complex')           // returns boolean value 
+  p.classList.length                        // returns length 
+
+  p.style                                   // access style properties (returns all style properties, '' if empty)
+  p.style.lineHeight                        // return style property or "" if it is empty (must use camel case)
+  p.style.background = 'green'              // set style property
 
 
+**************************************************************************
+*selecting elements (build in methods)
+
+  document.getElementById('id-name')        // returns frist instance of id name
+  document.getElementClassName(class-name') // returns frist instance of class name
+
+  document.getElementsTagName('tag-name')   // returns frist instance of tag name

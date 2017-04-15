@@ -29,8 +29,8 @@ missing after lost backup
 *Node Properties	
 *Determining the Type of a Node	
 *traversing Nodes
-
 *element attributes
+*finding element by id
 
 
 *************************************************************************
@@ -869,17 +869,43 @@ call and apply
       example:
 
         function walk(node) {
-          console.log(node.firstChild)
+          console.log(node);
+          if (node.nextSibling) {
+            walk(node.nextSibling);
+          }
         }
 
-        walk(document.body);
-
-    
+        walk(document.body.firstChild);
 
 
-*************************************************************************
-*************************************************************************
+      example: similar to forEach()
 
+        function walk(node, callback) {                      // walk() calls the Function callback once for each node
+          callback(node);                                    // do something with node
+
+          for (var i = 0; i < node.childNodes.length; i++) { // for each child node
+            walk(node.childNodes[i], callback);              // recursively call walk()
+          }
+        }                                                   
+
+        walk(document.body, function(node) {                 // log the nodeName of every node
+          console.log(node.nodeName);
+        });
+
+        this allowys you to preform operations like the following
+          var words = [];
+
+          walk(document, function(node) {
+            if (node.nodeName === "P") {
+              var text = node.firstChild.data.trim();
+              var firstWord = text.split(" ")[0];
+              words.push(firstWord);
+            }
+          });
+
+          console.log(words);  // ["A", "The", "The", "Where", "And"] 
+ 
+ 
 
 *************************************************************************
 *element attributes
@@ -915,7 +941,7 @@ call and apply
   working with classLists
     p                  // <p class="intro" id="simple">...</p>
     p.className        // 'intro'
-    p.classList        // ['intro']  (returns an Array-like domTokenList object
+    p.classList        // ['intro'] (returns an Array-like domTokenList object, usefull if there are multple classes)
     
       the following functions work on a domTokenList object
         add(name)      // adds a new name to classList
@@ -938,3 +964,7 @@ call and apply
     h1.style.lineHeight = '90px'  (camel case must be used for css hyphend properties)
 
 
+  
+
+
+  
