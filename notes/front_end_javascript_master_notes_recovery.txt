@@ -1,6 +1,8 @@
 *************************************************************************
   front_end_javascript_master_notes
 *************************************************************************
+
+  // objects and function scope
 *objects and methods ( this )
 *factory functions
 *object oriented programing ( key points )
@@ -10,27 +12,29 @@
 *hard binding functions with contexts
 *dealing with context loss (3 parts)
 *gentle introduction of keyword 'this' blogpost notes
-//
+  // closures and function scope
 *higher order functions
 *closures and private data
 
-missing after lost backup
-  Closures and Private Data	
-	Objects and Closures	
-	Garbage Collection	
-	How Closures Affect Garbage Collection	
-	Partial Function Application	
-	Immediately Invoked Function Expressions	
-	Creating a Private Scope with an IIFE	
-  //
-  The Document Object Model (DOM)	
-
+  missing after lost backup
+    Closures and Private Data	
+    Objects and Closures	
+    Garbage Collection	
+    How Closures Affect Garbage Collection	
+    Partial Function Application	
+    Immediately Invoked Function Expressions	
+    Creating a Private Scope with an IIFE	
+  
+  // The DOM	
 *A Hierarchy of Nodes	
 *Node Properties	
 *Determining the Type of a Node	
 *traversing Nodes
 *element attributes
-*finding element by id
+*selecting elements
+*creating adding and moving dom nodes
+  // event-driven and asynchronous programing
+*synchronous and asynchronous
 
 
 *************************************************************************
@@ -775,7 +779,7 @@ call and apply
     document.toString()          // "[object HTMLDocument]"
 
   dom nodes have propertiy names
-    document.nodeName            // "document" 
+    document.function nodeName            // "document" 
     p.nodeName                   // 'P'
 
   dom nodes have propertiy types
@@ -964,7 +968,130 @@ call and apply
     h1.style.lineHeight = '90px'  (camel case must be used for css hyphend properties)
 
 
-  
+**************************************************************************
+*selecting elements
+
+  document.querySelector()                      // select first element in the document by name
+  document.querySelectorAll()                   // select all elements in the document by name
+
+  document.getElementsByClassName('<selector>') // select all elements by class name
+  document.getElementsByTagName('<selector>')   // returns all elements by tag name
+
+  document.getElementById('<selector>')         // not plural becuase there should only be one id element
+
+    with querySelectoryAll() you can select elements using the same selector pattern rules as css 
+      querySelectorAll('div p.intro')          // selects all paragraphs with .intro class name inside a div 
+
+    all of the dom selectors that can fetch multiple elements return array like structures
+      but you should use a for loop to iterate overthem because forEach is not compatable with all browsers
+      or make convert to an array
+        var newArr = Array.prototype.slice.call(querySelectorResult);
 
 
+  childElements (excludestext text nodes)
+  body.children                             // returns all elements within the parent element
+  body.children.length                      // returns element count 
+  body.firstElementChild                    // returns first child element
+  body.lastElementChild                     // returns last child element
+  body.children[0].nextElementSibling       // returns next element sibling (previousNode.children[n + 1]) 
+  body.children[0].lastElementSibling       // returns last element sibling (previousNode.children[n - 1]) 
+
+  body.querySelector().textContent          // returns the text inside the selected elements 
+                                            // .textContent does not work on querySelectorAll()
+  body.querySelector().textContent = 'new text' // allows you to reassign text inside an element but 
+                                            // replaces all text content in the element so if there is multple
+                                            // lines of content select with span id and reasign by id
+
+
+
+**************************************************************************
+*creating adding and moving dom nodes
+
   
+  p1 = document.createElement('p')            // creates an element by tag type (must be created on the document)
+                                              // "[object HTMLParagraphElement]"
+  t1 = document.createTextNode('sample text') // creates a text node (must be created on the document)
+                                              // "[object Text]"
+  p1.appendChild(t1);                         // <p>sample text</p>
+
+  s2 = document.createElement('span')
+  s2.textContent = 'span text'                // alternate way to append text to an element
+
+  it is necessary to clone nodes because simply copying without cloneNode() it will still reference the orignal node
+    if place a shallow copy on the page in a different place the original node will disapear
+    true is the same as .cloneNode(deepClone)
+
+    p2 = p1.cloneNode(true)                   // create a copy of an element with cloneNode(true)
+
+  document.body.appendChild(p1)               // append to an element (body)
+
+  You can't call document.appendChild; it causes an error. Use document.body.appendChild instead.
+    
+
+**************************************************************************
+*synchronous and asynchronous
+
+  synchronous code 
+    runs sequentially(in order) fron top to bottom one line after the other
+    the code never stops running until it is complete
+
+  asynchronous code 
+    does not run sequentially, part might run now, part might run later
+    uses callback functions to run code later
+    sometimes the call stack is not running any code while it is waiting for a callback
+
+  virtual machine (sprocesses callback requests)
+    code is sent from the call stack to the virtual machine, once complete it is sent to the callback que
+
+  event loop 
+    continuously checks for code in the callback que and passes callbacks to the call stack
+
+
+  example: asynchronous function 
+
+    function makeLogger(i, message) {          
+      return function() {
+        console.log(i + ' ' + message);       // returns a function combining the interval and message  
+      }
+    }
+
+    function delay(intervals, message) {
+      for (var i = 1; i <= intervals; i++) {
+        logger = makeLogger(i, message);      // sends a request for a function from make logger
+        setTimeout(logger, i * 1000);         // setTimout gets passed to the virtual machine
+      }                                       // the call stack moves onto the next for loop iteration 
+    }
+
+    delay(5, 'seconds later');
+      // 1 seconds later
+      // 2 seconds later
+      // ...
+
+  example: functions that register code in the virtual machine (to be called back later) 
+
+    setTimeout(func, interval)                // time delay before running code
+
+    var id = setInterval(func, interval);     // continuous loop of time delay before running code
+      clearInterval(id)                       // the setInterval() loop must be cleared
+
+
+  example: setInterval and clearInterval 
+
+    function startCounting() {
+      var count = 0;
+      var id = setInterval(function() {
+        console.log(count += 1);
+        if (count > 3) stopCounting(id);
+      }, 1000) 
+    }
+
+    function stopCounting(id) {
+      clearInterval(id); 
+    }
+
+    startCounting();
+
+**************************************************************************
+
+
+

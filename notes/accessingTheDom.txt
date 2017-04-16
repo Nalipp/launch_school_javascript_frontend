@@ -3,9 +3,10 @@ DOM
 **************************************************************************
 
 *walking the dom
+*selecting elements
 *node properties and attributes
-*selecting elements (build in methods)
-
+*styling nodes
+*creating and moving nodes
 
 
 **************************************************************************
@@ -27,23 +28,23 @@ DOM
 
 
 **************************************************************************
+*selecting elements
+
+  document.querySelector('')                  // select first element in the document by name
+  document.querySelectorAll('')               // select all elements in the document by name
+  document.querySelectorAll('div.intro')      // uses css selector rules (selects all divs with class name intro)
+  document.querySelectorAll('').textContent   // returns text content inside selected elements 
+
+  var newArr = Array.prototype.slice.call(querySelectorResult);  // copy and create an array of the result
+
+  document.getElementsByClassName('<selector>') // select all elements by class name
+  document.getElementsByTagName('<selector>')   // returns all elements by tag name
+
+  document.getElementById('<selector>')         // not plural becuase there should only be one id element
+
+
+**************************************************************************
 *node properties and attributes
-
-  (brief intro to selecting elements)
-  document.querySelector()                  // select first element in the document by name
-  document.querySelectorAll()               // select all elements in the document by name
-
-  a = document.querySelector('a')
-  p = document.querySelector('p')
-  div = document.querySelector('div')
-
-  childNodes
-  document.childNodes                       // lists all child nodes
-  document.childNode.length                 // length of child nodes collection
-  document.firstChild                       // access first child node
-  document.childNodes[1]                    // access second child node
-  document.lastChild                        // access last child node
-  document.childNodes[document.childNodes.length -2]   // access second to last child node
 
   document.toString()                       // get the object type (inside the console)
   a.constructor                             // (for anchor elements) function HTMLAnchorElement() { [native code] }
@@ -59,15 +60,34 @@ DOM
   document.nodeValue                        // null  (elements don't have values) 
   document.childNodes[3].nodeValue          // string of text inside the <p></p> 
 
-  document.textContent                      // concats all of the content in the elemtens child nodes into string
-  document.childNodes[3].textContent        // accessing the text inside a non-element node
+  childNodes
+  document.childNodes                       // lists all child nodes
+  document.childNode.length                 // length of child nodes collection
+  document.firstChild                       // access first child node
+  document.childNodes[1]                    // access second child node
+  document.lastChild                        // access last child node
+  document.childNodes[document.childNodes.length -2]   // access second to last child node
 
-  div.childNodes                            // used for traversing the DOM
   div.parentNodes
   div.firstChild                            // div.childNodes[0]
   div.lastChild                             // div.childNodes[childNodes -1]
   div.nextSibling                           // div.childNodes[n+1]
   div.nextSibling                           // div.childNodes[n-1]
+
+  childElements (excludestext text nodes)
+  body.children                             // returns all elements within the parent element
+  body.children.length                      // returns element count 
+  body.firstElementChild                    // returns first child element
+  body.lastElementChild                     // returns last child element
+  body.children[0].nextElementSibling       // returns next element sibling (previousNode.children[n + 1]) 
+  body.children[0].lastElementSibling       // returns last element sibling (previousNode.children[n - 1]) 
+
+  document.textContent                      // concats all of the content in the elemtens child nodes into string
+  document.childNodes[3].textContent        // accessing the text inside a non-element node
+
+
+**************************************************************************
+*styling nodes
 
   p.hasAttribute('id')                      // returns boolean value
   p.getAttribute('id')                      // returns id name
@@ -83,14 +103,29 @@ DOM
   p.classList.length                        // returns length 
 
   p.style                                   // access style properties (returns all style properties, '' if empty)
-  p.style.lineHeight                        // return style property or "" if it is empty (must use camel case)
+  p.style.lineHeight                        // return style property or '' if it is empty (must use camel case)
   p.style.background = 'green'              // set style property
 
 
 **************************************************************************
-*selecting elements (build in methods)
+*creating and moving nodes
 
-  document.getElementById('id-name')        // returns frist instance of id name
-  document.getElementClassName(class-name') // returns frist instance of class name
+  para1 = document.createElement('p')             // creates an element by tag type (must be created on the document)
+  text1 = document.createTextNode('sample text')  // creates a text node (must be created on the document)
 
-  document.getElementsTagName('tag-name')   // returns frist instance of tag name
+  para1.appendChild(text1)                        // append text into an element <p>sample text</p>
+
+  document.body.appendChild(p1)                   // append to an element(body) in the last position
+  parent.insertBefore(node, targetNode)           // insert before (node is the new node)
+  parent.replaceChild(node, targetNode)           // replace (node is the new node)
+
+  document.body.children[1].insertAdjacentElement('afterend', para2)  // insert after specified element
+    'beforebegin'  => insert before the element
+    'afterbegin'   => insert before the first child of the element
+    'beforeend'    => insert after the last child of the element
+    'afterend'     => insert after the element
+
+  document.body.children[1].remove()              // remove a node
+  parent.removeChild(node)                        // remove a child node
+
+  p2 = p1.cloneNode(true)                         // create a copy of an element (true is deep clone) 
