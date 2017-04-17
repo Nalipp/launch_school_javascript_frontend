@@ -35,6 +35,8 @@
 *creating adding and moving dom nodes
   // event-driven and asynchronous programing
 *synchronous and asynchronous
+*user interfaces and events
+*event handlers / listeners
 
 
 *************************************************************************
@@ -1091,7 +1093,84 @@ call and apply
 
     startCounting();
 
+
 **************************************************************************
+*user interfaces and events
+
+  an event is something that happends on the page
+    they can be triggered by the following
+      1. the browser  => example: when the document loads
+      2. but the user => example: clicking on a button
+
+    the web application interface handles two things
+      1. displaying the user interface
+      2. handleing events
+
+    event listiner (aka event handler)
+      the code that is run in response to an event firing
+        event fires => code is run
+
+    'DOMContentLoaded' => an argument for an event listener (executes when the dom has been constructed)
+      happens after the html has been parsed and javaScript has been evaluated
+      and before the page displays on the screen and embeded assets are loaded
+
+      'load' is another argument (for an event handler) that executes after all 
+        html, javascript and embeded assets have been loaded but is not usually very practical
+
+    example: document loaded browser trigger
+
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('page loaded'); 
+      });
 
 
+**************************************************************************
+*event handlers / listeners
 
+  an event listener is a function that is called by the javaScript runtime when an event happens
+    they require the following four steps
+
+    1. identify the event (usually the event is triggered by the user or the page)
+    2. identify the target element (where the function will be applied to)
+    3. define the function (how will the target element be manipulated)
+    4. register the function as an event listener
+
+
+    There are two ways to prevent an event handler from being run before the page has loaded
+    both require wraping the event with DOMContenLoaded event listener
+
+      1. Wrap a content loaded event listener around the event listener
+
+        document.addEventListener('DOMContentLoaded', function() { 
+          var button = document.getElementById('alert');                  
+          button.addEventListener('click', displayAlert);                
+        });
+
+      2. set a global event handler  
+
+        document.addEventListener('DOMContentLoaded', function() {        
+          var button = document.getElementById('alert');                 
+          button.onclick = displayAlert;
+        });
+
+
+  examples : 
+
+
+    document.addEventListener('keypress', function(event) {
+      document.body.textContent = `
+        ${event.type}           // keypress
+        ${event.currentTarget}  // [object HTMLDocument] 
+        ${event.target}         // [object HTMLBodyElement]
+        ${event.which}          // ASCII Key code
+        ${event.shiftKey}       // boolean value (same with altKey, ctrlKey, metaKey)
+      `;
+    });
+
+    keypress doesn't fire with certain events like backspace, alt, shift
+
+    
+    more properties of the event object for Mouse events
+
+      clientX      // location of the mouse x axis
+      clientY      // location of the mouse y axis

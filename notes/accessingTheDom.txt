@@ -7,6 +7,7 @@ DOM
 *node properties and attributes
 *styling nodes
 *creating and moving nodes
+*event handlers / listeners
 
 
 **************************************************************************
@@ -84,6 +85,8 @@ DOM
 
   document.textContent                      // concats all of the content in the elemtens child nodes into string
   document.childNodes[3].textContent        // accessing the text inside a non-element node
+  document.childNodes[3].innerText          // returns visable text (textContent returns all text including hidden)
+  document.getElementById('text').value     // returns the (text)value of a selected element
 
 
 **************************************************************************
@@ -91,6 +94,7 @@ DOM
 
   p.hasAttribute('id')                      // returns boolean value
   p.getAttribute('id')                      // returns id name
+  p.getAttribute('id') === 'something'      // returns boolean value
   p.setAttribute('id', 'complex');          // sets id name (in this case to 'complex')
   p.id = 'complex'                          // alternative way to set name of id 
   p.className                               // class is a reserved work in javascript so use className
@@ -129,3 +133,53 @@ DOM
   parent.removeChild(node)                        // remove a child node
 
   p2 = p1.cloneNode(true)                         // create a copy of an element (true is deep clone) 
+
+
+**************************************************************************
+*event handlers / listeners
+
+
+  document.addEventListener('DOMContentLoaded', function() {   
+    var button = document.getElementById('alert');                  // wraping an event listener 
+    button.addEventListener('click', displayAlert);                 // around an event listener  
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {            
+    var button = document.getElementById('alert');                  // wraping an event listener
+    button.onclick = displayAlert;                                  // around a global event handler
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {        // callback after page loads
+    console.log('page loaded'); 
+  });
+
+  h1.onclick = function(event) {                                    // called by clicking on the h1 heading
+    e.preventDefault();
+    h1.style.backgroundColor = 'lawngreen';
+  }
+
+  common events
+
+    Event Type	  Example Events
+
+      Keyboard	   keydown, keyup, keypress
+      Mouse	       mouseenter, mouseleave, mousedown, mouseup, click, mousemove
+      Touch	       touchdown, touchup, touchmove
+      Window	     scroll, resize
+      Form	       submit
+
+  the event object
+
+    document.addEventListener('keypress', function(event) {
+      document.body.textContent = `
+        ${event.type}           // keypress
+        ${event.currentTarget}  // [object HTMLDocument] 
+        ${event.target}         // [object HTMLBodyElement]
+        ${event.which}          // ASCII Key code
+        ${event.shiftKey}       // boolean value (same with altKey, ctrlKey, metaKey)
+      `;
+    });
+
+
+
+

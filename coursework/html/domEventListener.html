@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Add One</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var addButton = document.getElementById('add');
+        var subtractButton = document.getElementById('subtract');
+        var output = document.getElementById('output');
+        var count = 0;
+
+        addButton.addEventListener('click', function(event) {
+          count++;
+          output.textContent = count;
+        });
+
+        subtractButton.addEventListener('click', function(event) {
+          count--;
+          output.textContent = count;
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <p>
+      <span id="output">0</span>
+      <button id="add">Add One</button>
+      <button id="subtract">Subtract One</button>
+    </p>
+  </body>
+</html>
