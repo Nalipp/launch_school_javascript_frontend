@@ -192,7 +192,7 @@ DOM
     }
   }
 
-  stopPropagation();   prevents bubbling (listener is added to all elements but only fires on first clicked event)
+  event.stopPropagation(); prevents bubbling (listener added to all elements but only fires on first clicked event)
 
     document.addEventListener('click', function(event) {
       event.stopPropagation();
@@ -203,7 +203,7 @@ DOM
       }
     }
 
-  preventDefault();
+  event.preventDefault();
 
     <a href="/">View page</a>
 

@@ -1269,7 +1269,7 @@ call and apply
   stop propagation
 
     allows you to apply an event handler to multple elements but only fires the event that the user interacts with
-    it is bets to place stopPropagation() or the following preventDefault() in the beginning of the code
+    it is bets to place stopPropagation() or the following event.preventDefault() in the beginning of the code
       which makes it easier to debug if there are errors and makes the code more explicit and easier to understand
 
     example :
