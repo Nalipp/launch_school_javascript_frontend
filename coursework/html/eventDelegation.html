@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>eventDelegation</title>
+
+    <style>
+      html {
+        height: 100%;
+        background: lightblue;
+        text-align: center;
+        font-family: monospace;
+        line-height: 1.4;
+        font-size: 14px;
+      }
+      td, th {
+        width: 8em
+      }
+
+      tbody tr:first-child td {
+        padding-top: 4em;
+      }
+
+      thead {
+        position: fixed;
+        top: 2.9em;
+        background: lightblue;
+      }
+
+      div {
+        position: fixed;
+        top: .3em;
+        left: 1em;
+        background: lightblue;
+        width:  38em;
+        text-align: left;
+        padding: .5em;
+      }
+
+      button {
+        position: fixed;
+        top: 1em;
+        left: 37em;
+      }
+    </style>
+
+    <script>
+      function phase(event) {
+        switch (event.eventPhase) {
+          case 0: return 'none';
+          case 1: return 'capturing';
+          case 2: return 'target';
+          case 3: return 'bubbling';
+          default: return 'error';
+        }
+      }
+
+      function elementName(element) {
+        var tag = element.tagName;
+        if (element === window) {
+          tag = 'window';
+        } else if (element === document) {
+          tag = 'document';
+        }
+        return tag.toLowerCase();
+      }
+
+      function addEventListeners(name, objects) {
+        objects.forEach(function(object) {
+          object.addEventListener(name, display);
+          object.addEventListener(name, display, true);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var input = document.querySelector('input');
+        var div = document.querySelector('div');
+
+        addEventListeners('keydown', [window, document, div, input]);
+        
+        var button = document.querySelector('#clear');
+        button.addEventListener('click', function() {
+          var tbody = document.querySelector('table tbody');
+          tbody.innerHTML = '';
+          input.value = '';
+          input.focus();
+        });
+      });
+
+      function display(event) {
+        var tbody = document.querySelector('table tbody');
+        var tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${event.type}</td>
+          <td>${elementName(event.target)}</td>
+          <td>${elementName(event.currentTarget)}</td>
+          <td>${phase(event)}</td>
+        `;
+         tbody.appendChild(tr);
+        
+        document.body.scrollTop = document.body.scrollHeight;
+      }
+    </script>
+
+  </head>
+  <body>
+    <div>
+      <input placeholder="type a letter here">
+    </div>
+
+    <button id="clear">Clear</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>type</th>
+          <th>target</th>
+          <th>currentTarget</th>
+          <th>phase</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </body>
+</html>

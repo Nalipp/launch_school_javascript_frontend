@@ -37,7 +37,7 @@
 *synchronous and asynchronous
 *user interfaces and events
 *event handlers / listeners
-
+*event capturing and bubbling (event delegation)
 
 *************************************************************************
 *objects and methods ( this )
@@ -1174,3 +1174,135 @@ call and apply
 
       clientX      // location of the mouse x axis
       clientY      // location of the mouse y axis
+
+
+**************************************************************************
+*event capturing and bubbling (event delegation)
+
+  downsides to event handling 
+
+    problem: 
+      with event handleing it is sometimes impractical to place an event handler on every possible event
+      you are also must wait until the DOMContentLoaded is complete
+      if a new dom element is generated on the page later you have to remember to add an event handler to it 
+
+    solution: event delegation (event capturing and bubbling)
+      adding an event handler to a containing element that listens for events fired on all of it's children
+
+
+  **************************************************************************
+  event capturing and bubbling (event delegation)
+    capturing     => the dom fires in succession moving inward
+    target phase  => until it reaches its target
+    bubbling      => and then moving outward
+    
+    capturing phase
+    when you click on a nested element the dom fires an event an all of its parent elements starting with the window    
+    target phase
+    the event fired on the actual target
+
+    bubbling phase
+    then it turns around and fires an event on every single element in revers back to the window
+
+
+  **************************************************************************
+  capturing vs bubbling
+
+    by default addEventListener() executes during the targed and bubbling phase
+
+      document.addEventListener('click', function(event) {
+        // listen for events during the targeting and bubbling phase
+      });
+
+    addEventListener() also takes a third optional argument this argument allows you to specify if 
+    events should be fired during the bubbling phase(false is default) or catpturing phase(true)
+
+     document.addEventListener('click', function(event) {
+        // will listen for capturing events instaed of the default bubbling events
+     }, true);    
+
+    it is best practice to just use the default bubbling 
+
+
+  **************************************************************************
+  delegation
+
+    one way to add event handlers to multiple elements
+
+      addSelectorArr = querySelectorAll('.shared-class')
+
+      for (var i = 0; i < addSelectorArr.length; i++) {
+        addSelectorArr[i].addEventListener('click', function(event) {
+          // do something with target
+        }
+      }
+        
+      however with this approach you have to wait until the dom is loaded to capture the arr of elements
+        this can cause timing problems on a complex page
+      if an additional element is added to the page later it will not be included in the for loop arr
+        an additional event handler will have to be added
+
+
+    using delegation (better)
+    
+      document.addEventListener('click', function(event) {
+        var target = event.target;          // checks every possible target in the document
+        if (target.tagName === 'BUTTON') {  // if the target meets the specification an event is preformed
+          // do someting with target
+        }
+      }
+
+      allows you to add an event handler to the entire document
+      then check the tag name before applying the event
+
+      delegation can also be added to parent elements insead of the entire document 
+        if we only need to listen to elements that are children of the parent
+
+      the tradeoff with event delegation is that sometimes it causes a lot of if else statements in the code
+        this can become a problem in complex applications
+
+      general rule is to start out binding elements individually and then as the code grows find areas where
+        it is better to use event delegation
+    
+
+  **************************************************************************
+  stop propagation
+
+    allows you to apply an event handler to multple elements but only fires the event that the user interacts with
+    it is bets to place stopPropagation() or the following preventDefault() in the beginning of the code
+      which makes it easier to debug if there are errors and makes the code more explicit and easier to understand
+
+    example :
+
+      function turnRed(event) {
+        event.stopPropagation();
+        event.currentTarget.style.background = 'red';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('.outer').addEventListener('click',  turnRed);    
+        document.querySelector('.inner').addEventListener('click',  turnRed);
+      }); 
+
+    in this example only the first clicked box will turn red instead of both
+
+
+  **************************************************************************
+  prevent default
+
+    allows you to specify an alternate event that the default
+
+    example :
+
+    <a href="/">View page</a>
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('a').addEventListener('click', function(event) {
+        event.preventDefault();
+        alert('Following the link was prevented.');
+      });
+    })
+
+    this example give a pop up window instead of following the link
+
+   

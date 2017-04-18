@@ -8,6 +8,7 @@ DOM
 *styling nodes
 *creating and moving nodes
 *event handlers / listeners
+*event handling delegation (capturing and bubbling)
 
 
 **************************************************************************
@@ -181,5 +182,34 @@ DOM
     });
 
 
+**************************************************************************
+*event handling delegation (capturing and bubbling)
 
+  document.addEventListener('click', function(event) {
+    var target = event.target;          
+    if (target.tagName === 'BUTTON') { 
 
+    }
+  }
+
+  stopPropagation();   prevents bubbling (listener is added to all elements but only fires on first clicked event)
+
+    document.addEventListener('click', function(event) {
+      event.stopPropagation();
+
+      var target = event.target;          
+      if (target.tagName === 'BUTTON') { 
+
+      }
+    }
+
+  preventDefault();
+
+    <a href="/">View page</a>
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('a').addEventListener('click', function(event) {
+        event.preventDefault();
+        alert('Following the link was prevented.');
+      });
+    })
