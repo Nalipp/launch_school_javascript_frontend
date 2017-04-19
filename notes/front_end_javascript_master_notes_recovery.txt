@@ -45,12 +45,24 @@
   methods   => functions with a receiver
   functions => no reciever
 
-  every function is called with a context
-  What is the context of a function?
-
   object methods are just properties that have a value set to a function
 
+  every function is called with a context (the context is the reciever object)
+
+    if a function is a the value of an object parameter it is a method and the reciever is the object
+    all functions have a reciever, if it is a method the object context is the reciever
+    if the function is not a part of an object the object context is the global window
+    a function can be passed around and be assigned a reciever dynamically
+    the object name is the context of the function 
+
+    What is the context of a function?    => the name of the receiver object
+
   what is the difference between function invocation and method invocation?
+
+
+  every function has a context automatically assigned at execution time i.e. ()
+  such as the global window or the object the function is being called in
+    the function context/reciever can be called with 'this'
 
   'this' is always avaiable when a method executes
     it is also available during function invocation
@@ -74,29 +86,55 @@
     'this' is a reference to the object itself
     'this' allows you to access and modify the properties of the object
 
-    var car = {
-      running: false,
+    example:
 
-      start: function() {
-        this.running = true;
-      },
-
-      stop: function() {
-        this.running = false;
+      var car = {
+        running: false,
+        start: function() {
+          this.running = true;
+        },
+        stop: function() {
+          this.running = false;
+        }
       }
-    }
 
-    car.start();
-    console.log(car);  // Object {running: true}
+      car.start();
+      console.log(car);  // Object {running: true}
 
-    car.stop();
-    console.log(car);  // Object {running: false}
+      car.stop();
+      console.log(car);  // Object {running: false}
 
 
     running, start, stop all have the context of the global window object (car)
       and can access that global window object with 'this'
       if the global window object name (car) changes,
         the methods will retain access to the changed name through 'this'
+        i.e. you can change the var name car and still retain access to the object 
+
+    example :
+
+      var person = {
+        firstName: 'joe',
+        lastName: 'smith',
+        upperName: function() {
+          console.log(person.firstName.toUpperCase(), person.lastName.toUpperCase());
+        }
+      }
+
+      person.upperName();    // 'JOE SMITH'
+
+    but if you reassign the person object to another name the method will no longer work,
+    so it is better to use 'this'
+
+      var people = {
+        firstName: 'joe',
+        lastName: 'smith',
+        upperName: function() {
+          console.log(this.firstName.toUpperCase(), this.lastName.toUpperCase());
+        }
+      }
+
+      people.upperName();    // 'JOE SMITH'
 
 
     *************************************************************************
@@ -130,13 +168,17 @@
 *************************************************************************
 *factory functions
 
+  basically when an function takes an argument(optional), then creates and returns an object
+
   creating objects using functions
 
   function car(mpg, currentGas) {
-    mpg : mpg,
-    gasTank : currentGas,
-    drive : function(miles) {
-      this.gasTank - (miles / this.mpg)
+    return {
+      mpg : mpg,
+      gasTank : currentGas,
+      drive : function(miles) {
+        this.gasTank - (miles / this.mpg)
+      }
     }
   }
 
@@ -156,6 +198,17 @@
 
   object oriented programing allows you re-use patterns as the basic building blocks of code
   this is safer than using local variables or functions
+
+  when we use objects it allows us to place behavior that manipulates the data of the object inside of the object
+  we can use 'smart objects' that can preform actions on the data they own
+  this allows us to move complexity inside of enclosed objects instead of the global scope
+
+  with oop  
+    we reorganize related data and code into an object
+    behaviors are placed in the object
+    we have fewer var names
+    the code is easer to read and understand 
+    are especially useful when a program needs multiple instances of something
 
 
   example : non OOP
@@ -181,15 +234,8 @@
 
 
   example : OOP
-    we reorganize related data into an object
-    the relationship between mpg and fuel becomes clearer
-    behaviors are placed in the object
-    notice how many fewer var names
-    objects can perform opperations on the data they own
-    the code is easer to read and understand than the non OOP example
 
-
-    function makeVehicle(fuel, mpg) {
+    function makeVehicle(fuel, mpg) {    // first we create an factory function
       return {
         fuel: fuel,
         mpg: mpg,
@@ -230,7 +276,7 @@
     |  Methods can be added to an object at any time, just like any other property.
     |
     |  When an object's methods are invoked, they can access the object they belong to by using this.
-
+    |
     |  Objects become more useful as projects become larger and more complicated.
 
 
@@ -238,21 +284,29 @@
 *function contexts and objects
 
   key point
-    javascript has first class functions, meaning they ..
+    javascript has first class functions, meaning they they can be passed around like values
+    functions can be invoked in different contexts (with different recievers)
+    when a function is created it does not have a context, the context is created when the function is invoked
 
+    because functions are first class, they...
       | can be added to objects and executed in the context of those objects
       | can be removed from their objects, passed around, and executed in completely different contexts
       | are initially unbound to any object, but are dynamically provided a context when they are executed.
 
 
+  javascript is both a OOP langauge and a language with first class functions
+    the developer must control the context of the functions
+
 
 *************************************************************************
 *global object
 
+  window is the global object in the browser
+  global is the global object in Node (terminal) environment
+
   global objects or variables are added to the global object as properties
 
-
-  window is the global object in the browser it has its own functions
+  window is the global object in the browser it already has its own functions
     window.alert()
     window.prompt()
     window.confirm()
@@ -268,7 +322,7 @@
 
   when you assign foo without a var declaration it is implicitly defined in the global scope
     foo = 1;          (is actually)
-    window.foo = 1;
+    window.foo = 1;   (it belongs to the global object context)
 
 
   when a global variable is created without var declaration and
@@ -285,14 +339,15 @@
     window.foo;  // 1
     delete foo   // false
 
+  | It's as though JavaScript tries to hide the fact these variables are global object properties!
 
 *************************************************************************
 *Implicit function execution context  (aka implicit binding for functions)
 
-  if 'this' is not a part of an object becomes binded with the implicit global context
+  if 'this' is not a part of an object it becomes binded with the implicit global context
 
-  when the finction binds 'this' to the global(window) object implicitly
-    if the function is called as a method inside an object it is bound to that object instead (not implicit binding)
+  'object implicitly' is when the finction binds 'this' to the global(window) 
+  'not implicit binding' is when the function is called as a method inside an object and is bound to that object
 
   context object => the object that 'this' binds to
 
@@ -426,7 +481,7 @@ call and apply
   foo.call(obj2);                  // call(obj2) is ignored, foo is still bound to obj
 
 
-  bind() is not is not executing a function but returns a new funciton with 'thit' permently bound
+  bind() is not executing a function but returns a new funciton with 'this' permently bound
     this allows us to pass around the function knowing that its context won't change
 
 
