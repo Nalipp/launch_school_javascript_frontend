@@ -50,7 +50,8 @@ DOM
 
   document.toString()                       // get the object type (inside the console)
   a.constructor                             // (for anchor elements) function HTMLAnchorElement() { [native code] }
-  a.constructor.name                        // 'HTMLAnchorElement'  (nodeName is easier)
+  a.constructor.name                        // 'HTMLAnchorElement'  (tagName is easier)
+  a.tagName                                 // 'A'
   p.constructor.name                        // 'HTMLParagraphElement'
 
   p instanceof HTMLParagraphElement;        // access boolean value

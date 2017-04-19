@@ -26,6 +26,7 @@
     Creating a Private Scope with an IIFE	
   
   // The DOM	
+*the Dom
 *A Hierarchy of Nodes	
 *Node Properties	
 *Determining the Type of a Node	
@@ -387,6 +388,7 @@ call and apply
 
   call allows us to specify the execution context when a function is executed
     apply is similar to call only that it accepts an array as arguments
+    call still accepts arguments but not as an array?
       someObject.someMethod.apply(context, [arg1, arg2, arg3..])
 
     var a = 1;
@@ -460,6 +462,13 @@ call and apply
   bind allows us to permently bind a function to it's context object
     when we use bind we are working with a fixed (function) return value, and can store it as a value
 
+  difference between bind and call
+    call allows you to specify the context of a function
+    bind allows you to bint the context object of a function permenently so that the function can be passed around
+      the context will not be implicity changed or changed explicity (even call does not work on a binded function)
+
+  with bind the function is not being invoked, bind returns a copy of the function with 'this' defined permently
+
 
   var a = 1;
 
@@ -524,6 +533,16 @@ call and apply
 *************************************************************************
 *dealing with context loss (3 parts)
 
+  context loss happens when a the context of a function is not explicity made called resulting in the context being
+    inplicitly binding to the global window 
+    this can happen when a function is called inside a function
+    this is because an inner function does not have the same context as an outer function, 
+      the inner function context must be explicity defined
+    a function call insiede of a method function call does not inherit the context of the parent method invocation
+      when the inner function is invoked it inexplicity uses the global context (or undfined in use strict mode)
+      it is a function invocation not a method invocation
+
+
   (review) changing the context of a function
 
     three ways of defining the execution context of a function
@@ -542,7 +561,7 @@ call and apply
 
 
       function repeatThreeTimes(func, context) {
-        func.call(context);       // the context is out of scope can't do func.call(john) unless context is passed in
+        func.call(context);   // the context is out of scope can't do func.call(john) unless context is passed in
         func.call(context);
         func.call(context);
       }
@@ -583,13 +602,33 @@ call and apply
       }
 
       foo();
+   
 
+     Alternate example
+
+      with bind you don't have to use objects to define the this context, bind works with just a funciton
+
+      var temperatures = [53, 86, 12, 43];
+
+      function average() {
+        var total = 0;
+        for (var i = 0; i < this.length; i++) {
+          total += this[i];
+        }
+
+        return total / this.length;
+      }
+
+      var averageTemps = average.bind(temperatures);
+      console.log(averageTemps());                        // 48.5
 
   *************************************************************************
   dealing with context loss (2)
 
     problem:
       when function bar() is executed the context is attached to the global object instead of the obj
+      this is because there is no explicit context provided for bar so bar is binded to the global object
+        since the context for foo is provided the context for bar should propagate but it dosen't (langauge flaw)
 
       obj = {
         a: 'hello',
@@ -738,6 +777,8 @@ call and apply
 
   (function invocation, method invocation, indirect invocation, bound function)
 
+  ****  'this' is the current execution context of function   ****
+
   intro
 
     the main difference between a function invocation and method invocation is a method invocation
@@ -769,19 +810,58 @@ call and apply
     }
 
 
-
-
   *************************************************************************
   method invocation
+
+    understanind the difference between a method invocation and a function invocation helps identify the context
+
+    a method invocation uses a property accessor ( ., () )
+
+      obj.myFunction = function() {        // function declaration
+        return new Date().toString();
+      };
+      obj.myFunction();                    // method invocation
+
+
+    'this' is the object that owns the method
+
+    when using setTimout bind is necessary because the method looses it's context when it is passed as a parameter
+
+    when you pass a method invocation as a parameter the context is lost
+      therefor if the method invocation uses this the following will fail
+        setTimout(myCat.logInfo)
+
+        solution
+        var extractedFunction = myCat.logInfo
+        setTimeout(myCat.logInfo.bind(myCat), 1000);
 
 
   *************************************************************************
   indirect invocation
+    
+    uses <function>.cal() or <function>.apply()
+
+    the first argument of an indirect function is 'this' 
 
 
   *************************************************************************
   bound function
 
+    a function that is connected(bound) to an object ( usually crated with <function>.bind() method )
+
+    example : binding to a function
+
+      function multiply(number) {  
+        return this * number;           when multiply() is binded to 5 on the following lines, 'this' is 5
+      }
+
+      var multiply5 = multiply.bind(5)
+      console.log(multiply5(2));
+
+    bind does not invoke the function immediatley ( unlike indirect invocations bind() and call() )
+      instead it makes a copy of the bound function to be assigned to a variable and used later
+
+    bind allows you to create funcitons with pre-defined 'this' values
 
 
 
@@ -829,7 +909,19 @@ call and apply
 *************************************************************************
 
 *************************************************************************
+*the Dom
+  
+  in an in-memory object that that represents an html document
+
+  this in-memory representation can be viewed in dev tools
+
+  javaScript can manipulate the dom
+
+  dom properties ( when manipulated with javascript i.e. addEventListener() ) allow us to watch for events
+
+*************************************************************************
 *A Hierarchy of Nodes	
+
   The browser creates a body and head (as well as other corrections) if they aren't specified in the original html
   the dom (which is accessable through dev tools) will reflect any changes made by the broswer
 
@@ -851,7 +943,7 @@ call and apply
     document.toString()          // "[object HTMLDocument]"
 
   dom nodes have propertiy names
-    document.function nodeName            // "document" 
+    document.nodeName            // "document" 
     p.nodeName                   // 'P'
 
   dom nodes have propertiy types
@@ -903,6 +995,7 @@ call and apply
          var a = document.querySelector('a');       (dosen't work with anchor tags thoug)
            a.toString()                             // 'www.google.com'  (actually returns the URL in the anchor)
            document.querySelector('a').constructor  // function HTMLAnchorElement() { [native code] } 
+           a.tagName                                // 'A'
 
     2. inside code use instanceof
          p instanceof HTMLParagraphElement;         // true
@@ -956,7 +1049,7 @@ call and apply
 
       example: similar to forEach()
 
-        function walk(node, callback) {                      // walk() calls the Function callback once for each node
+        function walk(node, callback) {                      // walk() calls the callback once for each node
           callback(node);                                    // do something with node
 
           for (var i = 0; i < node.childNodes.length; i++) { // for each child node
@@ -968,7 +1061,8 @@ call and apply
           console.log(node.nodeName);
         });
 
-        this allowys you to preform operations like the following
+
+        this allows you to preform operations like the following
           var words = [];
 
           walk(document, function(node) {
@@ -989,11 +1083,11 @@ call and apply
   getting and setting attributes
 
     var p = document.querySelector('p');
-    p                                    // <p class="intro" id="simple">...</p>
-    p.hasAttribute('id')                 // true
-    p.getAttribute('id')                 // 'simple'
+    p                                      // <p class="intro" id="simple">...</p>
+    p.hasAttribute('id')                   // true
+    p.getAttribute('id')                   // 'simple'
     p.setAttribute('id', 'complex');     
-    p                                    // <p class="intro" id="complex">...</p>
+    p                                      // <p class="intro" id="complex">...</p>
 
   attribute properties
 
@@ -1017,12 +1111,12 @@ call and apply
   working with classLists
     p                  // <p class="intro" id="simple">...</p>
     p.className        // 'intro'
-    p.classList        // ['intro'] (returns an Array-like domTokenList object, usefull if there are multple classes)
+    p.classList        // ['intro'] returns an Array-like domTokenList object, usefull if there are multple classes
     
       the following functions work on a domTokenList object
         add(name)      // adds a new name to classList
         remove(name)   // removes an existing name from classList
-        toggle(name)   // if the name exists removes it from classList and returns false (current status of the name)
+        toggle(name)   // if the name exists removes it from classList and returns false (current status of the name
                           if the name doesn't exist adds it to classList and returns true
         contains(name) // returns if the name is in the classList
         length         // returns the length of the class list
