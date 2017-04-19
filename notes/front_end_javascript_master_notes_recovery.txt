@@ -45,18 +45,33 @@
   methods   => functions with a receiver
   functions => no reciever
 
-  what is the difference between function invocation and method invocation?
+  every function is called with a context
+  What is the context of a function?
 
   object methods are just properties that have a value set to a function
 
-  every function is called with a context
+  what is the difference between function invocation and method invocation?
+
+  'this' is always avaiable when a method executes
+    it is also available during function invocation
+
+  when an object has a function set as a parameter value, the reciever/calling obj to that method is the object
+  if the function is not a part of an object it is not a method and has no reciever
+
+  example :
+
+    greeter.greeting           // [Function:morning]  no invocation            returns a function
+    greeter.greeting()         // 'good morning'      method invocation        executes the function
+
+    var g = greeter.greeting
+    g()                        // 'good morning'      function invocation      executes the function
 
 
   *************************************************************************
   this
 
     'this' is automatically available to methods
-    'this' is a reverence to the object itself
+    'this' is a reference to the object itself
     'this' allows you to access and modify the properties of the object
 
     var car = {
