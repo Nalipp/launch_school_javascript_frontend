@@ -15,13 +15,12 @@
   // closures and function scope
 *higher order functions
 *closures and private data
+*objects and closure
+*garbage collection	
+*readings on closures
+*partial function application
 
   missing after lost backup
-    Closures and Private Data	
-    Objects and Closures	
-    Garbage Collection	
-    How Closures Affect Garbage Collection	
-    Partial Function Application	
     Immediately Invoked Function Expressions	
     Creating a Private Scope with an IIFE	
   
@@ -40,6 +39,9 @@
 *event handlers / listeners
 *event capturing and bubbling (event delegation)
 
+
+*************************************************************************
+  // objects and function scope
 *************************************************************************
 *objects and methods ( this )
 
@@ -864,30 +866,35 @@ call and apply
     bind allows you to create funcitons with pre-defined 'this' values
 
 
-
+*************************************************************************
+  // closures and function scope
 *************************************************************************
   (review) closure and named functions
+
     there are two syntaxes for creating a function
     both follow the same lexical scoping rules
 
-    named function syntax
+    1. named function syntax
+
       function foo() {
         console.log('named function');
       }
 
-    function expression syntax
+    2. function expression syntax
+
       var foo = function() {
         console.log('function expression');
       }
 
 
 *higher order functions
-    is a function that works with other functions and does at least one of the two things
-    it helps to think of javascript functions as values
 
-      1. either accept a function as an argument
-      2. or return a function
+    a function that works with other functions
+    and does at least one of two things
+      -think of functions as values
 
+      1. either accepts a function as an argument
+      2. or returns a function
 
       example accept a function as an argument
 
@@ -903,11 +910,236 @@ call and apply
           return function() { console.log('hi ' + this) }
         }
 
+      example: timed (logs the time it takes to run a function) 
+        timed is a higher order function because it returns a funciton  
+          and also because it accepts a function as an argument
+
+        function timed(func) {
+          return function() {
+            var start = new Date();
+            func();
+            var stop = new Date();
+            console.log((stop - start).toString() + " ms have elapsed");
+          }
+        }
+
+
+        function loopy() {
+          var sum = 0;
+          for(var i = 0; i < 1000000000; i++) {
+            sum += i;
+          }
+          console.log(sum);
+        }
+
+        var runTime = timed(loopy)();  // the timed higher order function allows us to run the program and store
+                                          the return value so that it dosen't have to be ran each time
 
 *************************************************************************
-*************************************************************************
-*************************************************************************
+*closures and private data 
 
+  (in the following examples we examin closures that return a function)
+  
+  closures refer to the context or the scope that exists when the function was created
+  access to that scope persists regardless of where the function is executed later
+
+  example : 
+
+    function makeCounter() {
+      var count = 0;
+      return function() {
+        count += 1;
+        return count;
+      }
+    }
+
+    var newCount = makeCounter()
+    console.log(newCount());  // 1
+    console.log(newCount());  // 2
+
+  newCount retains access to the local variable 'count' that was in context when makeCounter() was created
+    it is impossible to access count once the funtion is created
+    count can only be manipulated through the methods that were defined when the closure was created
+
+
+  the closure hods the context from when the function was created
+    and reatains access to that context regardless of where the function is run later in the program
+
+
+  example : when making a closure over private data you can also provide functions as arguments 
+    
+    function later(func, argument) {
+      return function() {
+        func(argument);
+      }
+    }
+
+    var logWarning = later(console.log, 'The system is shutting down');
+    logWarning();      // 'The system is shutting down');
+
+*************************************************************************
+*objects and closures
+
+  (in the following examples we examin closures that return a objects)
+
+  somtimes a single return function is not well suited for interacting with private data
+    this can happen when there are multiple ways that the closre needs to manipulate the private data
+
+  an object can be a better programing interface(API) for manipulating the private data of a closure
+
+  the following two example contrast the two appraches
+
+
+  1. example ( returning function that interacts with data in multple ways (bad) )
+
+    function makeList() {
+      var items = [];
+
+      return function(newItem) {
+        if (newItem) {
+          var index = items.indexOf(newItem)
+          if (index === -1) {
+            items.push(newItem);
+            console.log(newItem + ' added!');
+          } else {
+            items.splice(index, 1);
+            console.log(newItem + ' removed!');
+          }
+        } else {
+          if (items.length === 0) {
+            console.log('There are no items in the list.');
+          } else {
+            items.forEach(function(item, index) {
+              console.log((index + 1) + ': ' + item);
+            });
+          }
+        }
+      }
+    }
+
+    var list1 = makeList();
+
+    list1('list item')  // adds a list item
+    list1('list item')  // deletes a list item if it is on the list or adds
+    list1()             // displays the list
+
+    but hard to understand what does what
+
+
+  2. example ( returning an object instead of a function (better) )
+
+    function makeList() {
+      var items = [];
+
+      return {
+        add: function(item) {
+          items.push(item);
+          console.log('"' + item + '"' + ' has been added') 
+        },
+        remove: function(item) {
+          if (items.indexOf(item) !== -1) {
+            items.splice(items.indexOf(item), 1);
+            console.log('"' + item + '"' + ' has been deleted') 
+          }
+        },
+        logList: function() {
+          items.forEach(function(value, index) {
+            console.log((index + 1) + ': ' + value);
+          }); 
+        },
+      }
+    }
+
+    list1 = makeList();
+
+    list1.add('bananas');      // adds to the list
+    list1.logList();           // logs the list
+    list1.remove('bananas');   // removes from the list
+    list1.logList();           
+
+    easier to undetstand that interface when we use an object instead of a single function
+
+*************************************************************************
+*garbage collection	
+
+  garbage collection happens automatically when a variable is out of scope
+  a variable goes out of scope when there is no longer any code that has access to it
+
+  closures can cause an issue with automatic garbage collection because colsure continue to hold scope on variables
+  any reference to a variable inside a closure must be removed 
+    before memory used to store the variable can be deallocated
+
+  common way to remove a copy of a funciton(closure) is to set it to null
+    this removes the reference to any private variables contained in the closure
+
+    list1() = null;
+  
+
+*************************************************************************
+*readings on closures
+
+  why use "closure"?   https://howtonode.org/why-use-closure
+  mdn documentation    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#Practical_closures 
+
+
+  *************************************************************************
+  why use "closure"?
+
+    closures allow you to maintain state across event calls
+
+    a closure is a first class function with variables that are bound to the lexical environment
+    a closure closes over the variables in its lexical scope
+
+    a closure is a function within an outer scope(another function) 
+      that has access to the outer variables of that scope(another function)
+
+    exmaple: generating a closure
+    var bobGreeter = greeter("Bob", 47);     // 'var bobGreeter' is the closure
+
+    a factory function that returns a function is similar to a class in OOP
+      one thing to remember is that each insteance of the factory function (class) has it's own set of functions
+        so it is not a good idea to use factory functions where there is a lot of instances
+
+
+  *************************************************************************
+  mdn documentation    
+
+    closures allow encapsulation and data hidding similar to objects(classes) in oop
+
+    closure allow you to associated variables (withing a lexical scope) with a function that operates on that data
+    closures are similar to OOP objects where data(properties) is associated with methods(properties) on the data
+
+    closures can be used where objects can be used
+
+    there is not a native way to keep variables private in javaScript(5) but this can be emulated through closures
+      you can create a closure that exposes a public api that opperates on the private data
+      methods in the closure are clear of the global namespace
+      public functions can access both private data and private functions
+
+
+*************************************************************************
+*partial function application
+
+  when a funciton is invoked with some arguments defined and allows for other artguments to be defined later 
+
+    example:
+
+    function makeAddN(addend) {    // addend is defined when the closure is created
+      return function(number) {    // number is defined later when the closure is invoked 
+        return addend + number;
+      }
+    }
+
+    var add1 = makeAddN(1);
+    add1(1);                           //  2
+    add1(41);                          //  42
+
+    var add9 = makeAddN(9);
+    add9(1);                           //  10
+    add9(9);                           //  18
+
+*************************************************************************
+  // The DOM	
 *************************************************************************
 *the Dom
   
@@ -1194,6 +1426,8 @@ call and apply
   You can't call document.appendChild; it causes an error. Use document.body.appendChild instead.
     
 
+**************************************************************************
+  // event-driven and asynchronous programing
 **************************************************************************
 *synchronous and asynchronous
 
