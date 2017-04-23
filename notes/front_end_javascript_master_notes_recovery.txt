@@ -19,11 +19,7 @@
 *garbage collection	
 *readings on closures
 *partial function application
-
-  missing after lost backup
-    Immediately Invoked Function Expressions	
-    Creating a Private Scope with an IIFE	
-  
+*immediately invoked function expressions
   // The DOM	
 *the Dom
 *A Hierarchy of Nodes	
@@ -34,7 +30,7 @@
 *selecting elements
 *creating adding and moving dom nodes
   // event-driven and asynchronous programing
-*synchronous and asynchronous
+*synchronous and asynchronous (asynchronous gotcha)
 *user interfaces and events
 *event handlers / listeners
 *event capturing and bubbling (event delegation)
@@ -891,10 +887,11 @@ call and apply
 
     a function that works with other functions
     and does at least one of two things
-      -think of functions as values
 
       1. either accepts a function as an argument
       2. or returns a function
+
+      -think of functions as values
 
       example accept a function as an argument
 
@@ -962,7 +959,7 @@ call and apply
     count can only be manipulated through the methods that were defined when the closure was created
 
 
-  the closure hods the context from when the function was created
+  the closure holds the context from when the function was created
     and reatains access to that context regardless of where the function is run later in the program
 
 
@@ -1137,6 +1134,86 @@ call and apply
     var add9 = makeAddN(9);
     add9(1);                           //  10
     add9(9);                           //  18
+
+
+    example : partial function that uses a function(greet) as an argument
+              passing functions to a partial function this example allows you to combine a permenent argument value
+                with a function that performs an opperation on the permenent value and a later specfied argument 
+
+      function greet(greeting, name) {
+        return greeting + ' ' + name;
+      }
+
+      function greetFactory(func, permGreeting) {
+        return function(name) {
+          return func(permGreeting, name);
+        }
+      }
+
+      var sayHello = greetFactory(greet, 'hello');
+      var sayHi = greetFactory(greet, 'hi');
+
+      console.log(sayHello('Brandon'));    // Hello, Brandon!
+      console.log(sayHi('Sarah'));         // Hi, Sarah!
+
+*************************************************************************
+*immediately invoked function expressions
+  
+    surrounding a function with parenthesis immediately invokes the function
+    without the parenthesis it is just a function expression with no name (error)
+
+    in javaScript parenthesis do not change values
+
+      (function() {
+        console.log('hello');
+      })();                     // hello
+
+    the parenthesis () after the function all the function immediatley and can accept arguments
+
+      (function(name) {
+        console.log('hello' + name);
+      })('matt');                     // hello matt
+
+      var foo = function() {
+        return 'hello'; 
+      }();
+
+      console.log(foo());
+
+    if the IIFE is not at the beginning of the line the parenthesis can be ommited 
+
+      var foo = function() {
+        return function() {
+          console.log(10);
+        }();
+      }();
+
+      foo()       // 10
+
+    IIFE can be useful for creating private scope
+
+      it is not good to place variables(or code) in the global scope so 
+      IIFE can be useful because it creates its own scope and can run without being called
+
+        var i = 20;         (i pollutes the global scope)
+
+
+      wraping the variables / code in a function also creates a private scope 
+        but the function is now in the global scope which is also not desirable 
+
+        function varI() {  (now the function declaration pollutes the global scope)
+          var i = 20;      (this could be a problem if there is another function with the same name)
+        }
+        varI():
+
+        this can be soved with an IIFE where the function dosen't need a name
+
+        (function(num) {    (better)
+          var i = 20;
+          return i + num    
+        })(5);              // 100
+
+
 
 *************************************************************************
   // The DOM	
@@ -1424,12 +1501,13 @@ call and apply
   document.body.appendChild(p1)               // append to an element (body)
 
   You can't call document.appendChild; it causes an error. Use document.body.appendChild instead.
+
     
 
 **************************************************************************
   // event-driven and asynchronous programing
 **************************************************************************
-*synchronous and asynchronous
+*synchronous and asynchronous (asynchronous gotcha)
 
   synchronous code 
     runs sequentially(in order) fron top to bottom one line after the other
@@ -1440,11 +1518,19 @@ call and apply
     uses callback functions to run code later
     sometimes the call stack is not running any code while it is waiting for a callback
 
-  virtual machine (sprocesses callback requests)
+  virtual machine (processes callback requests)
     code is sent from the call stack to the virtual machine, once complete it is sent to the callback que
 
   event loop 
     continuously checks for code in the callback que and passes callbacks to the call stack
+
+  
+  **************************************************************************
+  setTimeout(function(){}, 1000);                  // executes once after one second
+
+  var intId = setInterval(function(){}, 1000);     // executes ever second until clearInterval is called on its id
+  clearInterval(intId); 
+  **************************************************************************
 
 
   example: asynchronous function 
@@ -1492,6 +1578,54 @@ call and apply
     startCounting();
 
 
+  example : there is a common gotcha with creating closures with loops 
+
+    the intention of following function is to log a number, once each second (up to max)
+    
+      function secondsLogger(max) {
+        for (var i = 1; i < max; i++) {
+          setInterval(function() {
+            console.log(i);
+          }, i * 1000);
+        }
+      }
+
+      secondsLogger(10);
+
+    instead of logging each number the number 10 is logged 10 times once each second
+    this is because the setInterval is a closure and the lexical scope is set up
+      when it is created, not when it is executed 
+      (if var i changes the closure points to the changed i not the original var when the closure was created)
+      i changes to 10 and the set interval closure reflects that change
+
+      to remedy this you can move the setTimout closure to a seperate scope from the for loop
+
+        function logger(val) {
+          setTimeout(function() {
+            console.log(val);
+          }, val * 1000);
+        }
+
+        function secondsLogger(max) {
+          for (var i = 1; i < max; i++) {
+            logger(i);
+          }
+        }
+
+        secondsLogger(10);
+
+      or in es6 you can use let 
+        let creates its own scope when the for loop is run
+
+      function secondsLogger(max) {
+        for (let i = 1; i < max; i++) {
+          setInterval(function() {
+            console.log(i);
+          }, i * 1000);
+        }
+      }
+
+
 **************************************************************************
 *user interfaces and events
 
@@ -1532,6 +1666,13 @@ call and apply
     2. identify the target element (where the function will be applied to)
     3. define the function (how will the target element be manipulated)
     4. register the function as an event listener
+
+  global event handlers
+    example :
+
+    document.onclick = displayAlert
+    document.onsubmit = somefunction
+    document.onkeypress = somefunstion
 
 
     There are two ways to prevent an event handler from being run before the page has loaded
@@ -1667,7 +1808,7 @@ call and apply
   stop propagation
 
     allows you to apply an event handler to multple elements but only fires the event that the user interacts with
-    it is bets to place stopPropagation() or the following event.preventDefault() in the beginning of the code
+    it is best to place stopPropagation() or the following event.preventDefault() in the beginning of the code
       which makes it easier to debug if there are errors and makes the code more explicit and easier to understand
 
     example :
@@ -1688,7 +1829,7 @@ call and apply
   **************************************************************************
   prevent default
 
-    allows you to specify an alternate event that the default
+    allows you to specify an alternate event than the default
 
     example :
 
