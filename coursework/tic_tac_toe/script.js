@@ -1,9 +1,10 @@
-
 let board = [
   [ null, null, null ],
   [ null, null, null ],
   [ null, null, null ]
 ];
+
+let boardReset = board;
 
 let player = 'x';
 
@@ -34,60 +35,61 @@ function populate (board, player) {
   });
 }
 
+
 function nextPlayer (board, player) {
   player = player === 'x' ? 'o' : 'x';  
   return player;
 }
 
+
 function findWinner (board, player) {
-  // if (winner('x')) return 'x is the winner';
-  // if (winner('o')) return 'o is the winner';
-  // return null;
+  var rows = document.querySelectorAll('.row');
+  var resultArr = [];
+  for (var i = 0; i < rows.length; i++) {
+    for (var j = 0; j < rows[i].children.length; j++) {
+      resultArr.push(rows[i].children[j].innerText);
+    }
+  }
+  var winner = scanArrForWinner(resultArr);
+  if (winner) {
+    alert(winner + ' is the winner!')
+    resetGame();
+  };
+  if (resultArr.indexOf('.') === -1) {
+    alert('no winner');
+    resetGame();
+  }
+}
 
 
-  // if (winner('x')) return 'x is the winner';
-  // if (winner('o')) return 'o is the winner';
-  // return null;
+function resetGame() {
+  var allSpans = document.querySelectorAll('span');
+  for (var i =0; i < allSpans.length; i++) { 
+    allSpans[i].remove();
+  }
+  populate(boardReset, 'x');
+}
 
-  // var rows = document.querySelectorAll('.row');
-  // var resultArr = [];
-  // for (var i = 0; i < rows.length; i++) {
-  //   var resultRow = [];
-  //   for (var j = 0; j < rows[i].children.length; j++) {
-  //     resultRow.push(rows[i].children[j].innerText);
-  //   }
-  //   resultArr.push(resultRow);
-  // }
-  // console.log(resultArr);
+
+function scanArrForWinner(resultArr) {
+  var oWins;
+  var xWins;
+  var winningLines = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], 
+                     [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];            
+
+  for (var i = 0; i < winningLines.length; i++) {
+    oWins = winningLines[i].every(function(value) {
+      return resultArr[value - 1] === 'o';
+    });
+    xWins = winningLines[i].every(function(value) {
+      return resultArr[value - 1] === 'x';
+    });
+    if (oWins) return 'o';
+    if (xWins) return 'x';
+  }
+  return null;
 }
 
 populate(board, player);
 
 
-
-
-// - Write the `populate` function to populate the table according to the game state. 
-// - Write the `nextPlayer` function to determine which player should go next based on the state of the game, assuming that "x" always goes first. Return "x" or "o".
-// - Write the `findWinner` function to determine whether there is a winner in the current game. Return "x" or "o" if there is a winner, and `null` if there is not. 
-// - Imagine a 4 x 4 board where a player wins by connecting three positions -- how would your solutions change?
-// - How would your solutions change to adapt to arbitrary board sizes and arbitrary requirements for the number of positions that must connect? For example, consider an 8x8 board where four of a player's pieces must connect.
-//
-//
-//
-// |   |   |   |
-// |---|---|---|
-// |   |   |   |
-// |   |   |   |
-// |   |   |   |
-
-// # Tic-tac-toe
-
-// Use the table above as the game board. The state of the game is represented by an array of arrays:
-
-// ```
-// let state = [
-//   [ 'x', 'o', null ],
-//   [ 'x', 'x', 'o' ],
-//   [ 'o', 'x', null ]
-// ];
-// ```
