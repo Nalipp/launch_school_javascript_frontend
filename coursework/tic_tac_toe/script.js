@@ -63,7 +63,9 @@ function findWinner (board, player) {
 
 
 function resetGame() {
+  document.querySelector('#player-turn').innerText = '';
   var allSpans = document.querySelectorAll('span');
+
   for (var i =0; i < allSpans.length; i++) { 
     allSpans[i].remove();
   }
