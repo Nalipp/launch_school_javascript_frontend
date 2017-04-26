@@ -47,6 +47,7 @@
 
 *jquery dom traversal
 *events
+*jquery to javascript conversion examples
 
 
 *************************************************************************
@@ -1923,3 +1924,15 @@ jquery
       $('body').css('background', 'green');
     }
 
+**********************************************************************************************************************
+*jquery to javascript conversion examples
+
+  $('form').on('submit', function(e) {});                       // jquery verion of form submit
+  document.querySelector('form').onsubmit = function(e) {});    // javascript verion of form submit
+
+  submit = window.onload
+  load = onload
+  click = onclick
+  submit = onsubmit
+  text = innerHTML
+  val = value
