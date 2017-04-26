@@ -11,7 +11,7 @@ body {
   border-radius: 6px;
 }
 
-#result {
+h2 {
   display: block;
   height: 100px;
   width: 300px;

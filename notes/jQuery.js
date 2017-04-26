@@ -133,6 +133,14 @@
 
 // **********************************************************************************************************************
 // *forms
+
+    $('form').on('submit', function(e) {
+      e.preventDefault();
+      $input = $(this).find('input[type=text]');          // when submiting a form access the element using $(this)
+
+      $p.text('Your favorite fruit is ' + $input.val());
+    });
+
     $inputs = $(':input');                      // grabs all the inputs on the page (includes buttons)
     $inputs.filter(':text');                    // filters inputs by [type=text]
     $(':radio').filter(':checked');             // all radios that are checked
@@ -140,12 +148,6 @@
     $(':radio').filter('['value=value-name']').prop('checked', true) // filter by value name, set checked
       // prop is better than attr bc attr won't actually submit the form with the checked status updated
     
-    $('form').on('submit', function(e) {
-      e.preventDefault();
-      $input = $(this).find('input[type=text]');
-
-      $p.text('Your favorite fruit is ' + $input.val());
-    });
     
 // **********************************************************************************************************************
 
