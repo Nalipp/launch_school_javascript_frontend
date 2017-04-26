@@ -34,6 +34,19 @@
 *user interfaces and events
 *event handlers / listeners
 *event capturing and bubbling (event delegation)
+  // 
+  // jQuery
+
+  no notes yet
+    Introduction	
+    Code Style	
+    Douglas Crockford Lecture: The Metamorphosis of Ajax	
+    Introduction to jQuery	
+    jQuery Overview	
+    jQuery Events	
+
+*jquery dom traversal
+*events
 
 
 *************************************************************************
@@ -1845,3 +1858,68 @@ call and apply
     this example give a pop up window instead of following the link
 
    
+
+**********************************************************************************************************************
+jquery
+**********************************************************************************************************************
+
+
+**********************************************************************************************************************
+*jquery dom traversal
+  http://api.jquery.com/category/traversing/
+
+  *selecting children and nested
+
+    find() allows you to look withing an object
+      $('ul#navigation').find('li')          // selects all the li elements in the ul (including nested li's)
+      children() returns only the immediate children no nested elements
+        $('ul#navigation').children('li')    // selects only the direct children li's (no nested li's) 
+
+
+  *selecting parents and closest
+
+    parent() allows you to look outside an object
+    parents() allows you to look outside for multiple objects (will search all the way out to the root element)
+
+    closest() allows you to look outside an object (starts at the current element and then searches outward)
+      if you closest() argument is the same as the current element attribute it will return the current element 
+      closest() works great if you just want the first of element type diffrent than current element type
+
+
+  *selecting siblings 
+
+    siblings() selects all siblings
+    nextAll()  selects all siblings after the current element
+    prevAll()  selects all siblings before the current element
+    next()     selcts next sibling
+
+
+**********************************************************************************************************************
+*events
+
+  $(document).on('keypress', function(e) {});                    // event handler on
+  $(document).off('keypress');                                   // unbind event handler
+  $(document).off('keypress').on('keypress', function(e) {});    // unbind before listening for another event
+
+  e.preventDefault();                 // a method on the event preventing the browser from executing starndar behavior
+
+  $(function() {                      // remember to wrap events in self executing functions to prevent global clutter 
+    $('a').on('click', function(e) {  // .on() is the event handler
+      e.preventDefault();             // e is the evnet
+    });                               // prevent url request
+  });
+
+
+  **********************************************************************************************************************
+  *trigger
+
+    allows you to trigger an event handler that has already been defined
+    this can be useful if you want to trigger an existing event in an expression
+    gives you more than one way to access an event or a way to access the same event from multiple places(expressions)
+
+    $('a').trigger('mouseover');      
+                                        
+    $('a').on('mouseover', function() {
+      $('body').css('background', 'green');
+    }
+
