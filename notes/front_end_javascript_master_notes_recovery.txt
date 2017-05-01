@@ -1930,9 +1930,25 @@ jquery
   $('form').on('submit', function(e) {});                       // jquery verion of form submit
   document.querySelector('form').onsubmit = function(e) {});    // javascript verion of form submit
 
-  submit = window.onload
-  load = onload
-  click = onclick
-  submit = onsubmit
-  text = innerHTML
-  val = value
+  window.onload = function() {}                                 // waits until after the page has loaded
+
+    example : various conversions
+
+    click = onclick
+    submit = onsubmit
+    text = innerHTML
+    val = value
+
+
+  *get
+
+  there are some pure javascipt methods that jquery does not have access to, 
+    to access a dom node from jquery selection use .get() 
+    .get() accepts an argument of the index of the element you want to retreive 
+    
+    example :
+    $("form").get(0).reset()  // reset is a pure javascript function for reseting the form to default values
+                              // the 0 index grabs the first form element in the array of potentional of found 
+                              // elements on the page
+
+

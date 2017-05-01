@@ -14,11 +14,10 @@
 // *loading
 //
     $(document).ready(function() { });            // loads after the dom loads
-    $(window)on('load', function() { });        // loads after the entire page loads
+    $(window)on('load', function() { });          // loads after the entire page loads
 
-    $(document).read(function() { });             // if this is placed at the top of the file
-      $(function() { });                        // you can run function throughout the page and 
-                                                // it will only run after the dom is loaded 
+    $(document).ready(function() { });            // these two are the same 
+    $(function() { });                            // they both run only when the page is loaded (second one is cleaner) 
 
 
 // **********************************************************************************************************************
@@ -90,7 +89,8 @@
     $('li').show();                             // show the element 
     $('li').hide();                             // hide the element 
 
-    $('ul').empty();                            // remove children 
+    $('#element').remove();                     // remove element by selector (not including children)
+    $('#element').empty();                      // remove element by selector (including children)
 
 
 // **********************************************************************************************************************
@@ -150,6 +150,6 @@
     
     
 // **********************************************************************************************************************
+// *concepts
 
-
-
+    $("form").get(0).reset()  // convert to dom element and reset(is a pure javascript method) to the default values

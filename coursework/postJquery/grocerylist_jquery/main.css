@@ -1,0 +1,54 @@
+body {
+  background: #333;
+  color: purple;
+  font-family: helvetica;
+}
+
+#interface {
+  padding: 20px;
+  margin: 40px auto; 
+  background: white;
+  width: 500px;
+  border-radius: 6px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+form {
+  background: white;
+  padding: 20px;
+}
+
+label {
+  padding: 10px;
+}
+
+input {
+  margin: 10px;
+  font-size: 20px;
+  height: 30px;
+  border: 2px solid grey;
+  border-radius: 4px;
+}
+
+input[type=text] {
+  width: 90%;
+}
+
+input[type=number] {
+  display: block;
+  height: 30px;
+  width: 40px;
+}
+
+input[type=submit] {
+  background-color: purple;
+  color: white;
+  vertical-align: top;
+  border-radius: 8px;
+  border: none;
+  height: 55px;
+  width: 100%;
+}
