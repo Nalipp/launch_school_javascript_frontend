@@ -1,32 +1,16 @@
 $(function() {
-  var index = 0;
+  var $imgDisplay = $('#img-display');   
+  var $nav = $('div#img-display + ul');
+  
+  $nav.on('click', 'a', function(e) {
+    e.preventDefault();
+    var $li = $(e.currentTarget).closest('li');
+    var idx = $li.index();
 
-  $('li img').on('click', function() {
-    var imgIndex = ($('li img')).index($(this));
-    changeImage($(this), imgIndex);
-  });
+    $imgDisplay.find("figure").stop().filter(':visible').fadeOut(300);
+    $imgDisplay.find("figure").eq(idx).delay(300).fadeIn(300);
 
-  $('#arrow-right').on('click', function() {
-    var imgIndex = ($('li img')).index($(this));
-    index === 3 ? index = 0 : index += 1;
-    changeImage($(this), index);
-  });
-
-  $('#arrow-left').on('click', function() {
-    var imgIndex = ($('li img')).index($(this));
-    index === 0 ? index = 3 : index -= 1;
-    changeImage($(this), index);
+    $nav.find('.active').removeClass('active');
+    $li.find('img').addClass('active');
   });
 });
-
-function changeImage($clickedElement, imgIndex) {
-  var imageSrc = $('li img').eq(imgIndex).attr('src');
-
-  $('img').removeClass('active');
-  $('li img').eq(imgIndex).addClass('active');
-
-  $('figure img').eq(1).stop().fadeOut(function() {
-    $(this).attr('src', imageSrc).fadeIn();
-  });
-}
-

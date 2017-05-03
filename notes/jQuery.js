@@ -66,6 +66,10 @@
                                                   // the element is not required!
     $('.close, .modal-layer')                   // selects multiple properties
 
+    // find vs filter
+      // filter will select subset of element from the selected element
+      // find will select descendent/children of selected element
+
 // **********************************************************************************************************************
 // *build in methods
 
@@ -131,6 +135,17 @@
       $('a').on('mouseover', function() {
         $('body').css('background', 'green');
       }
+
+  // selecting the target element
+      $('ul').on('click', 'a', function(e) {
+        $(e.target)                    // the element that triggered the event [img]
+        $(e.currentTarget)             // the element the event listener is attached to [a]
+        $(e.currentTarget).index()     // will find the index of the current target 
+                                         // withing the list of parent elements (not all the a's on the page)
+      }
+
+    
+
 
 
 // **********************************************************************************************************************
