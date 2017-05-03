@@ -43,6 +43,7 @@
     $('table tr:even').addClass('.striped');    // adding a class to every ohter row
     $('table').find('tr:odd').removeClass('striped);
     $('table').find('tr').filter(':even').toggleClass('striped');
+    $('li').filter(':visible').fadeOut(400);    // filters elements if they are visible
 
     $('li').parrent();                          // accessing the next parent (ul)
     $('li').parrents('ul');                     // accessing all the parents with 'ul'(optional)
@@ -63,7 +64,7 @@
     $('a[href$=#]');                            // selects all hrefs that end with '#'
     $('[class*=block]');                        // selects all element's that have a class with the word 'block' 
                                                   // the element is not required!
-                                               
+    $('.close, .modal-layer')                   // selects multiple properties
 
 // **********************************************************************************************************************
 // *build in methods
@@ -91,6 +92,19 @@
 
     $('#element').remove();                     // remove element by selector (not including children)
     $('#element').empty();                      // remove element by selector (including children)
+
+    $(window).scrollTop();                      // returns top position of the current view window
+
+    $e.nextAll('div').fadeIn(400);              // fades in an element (useful when css display is set to none)
+
+  // css
+
+    $e.siblings('.modal').css('display': 'block');
+
+    $e.siblings('.modal').css({
+      'display': 'block',
+      'top': $(window).scrollTop() + 30,
+    });
 
 
 // **********************************************************************************************************************
