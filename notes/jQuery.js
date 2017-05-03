@@ -8,6 +8,7 @@
 // *events
 // *each
 // *forms
+// *animations
 //
 //
 // **********************************************************************************************************************
@@ -101,6 +102,12 @@
 
     $e.nextAll('div').fadeIn(400);              // fades in an element (useful when css display is set to none)
 
+    // toggle
+    isValid = validateCC(cc_number) % 10 == 0;
+
+    $(this).find(".success").toggle(isValid);
+    $(this).find(".error").toggle(!isValid);
+
   // css
 
     $e.siblings('.modal').css('display': 'block');
@@ -140,6 +147,7 @@
       $('ul').on('click', 'a', function(e) {
         $(e.target)                    // the element that triggered the event [img]
         $(e.currentTarget)             // the element the event listener is attached to [a]
+        $(this)                        // essentially the same as current target
         $(e.currentTarget).index()     // will find the index of the current target 
                                          // withing the list of parent elements (not all the a's on the page)
       }
@@ -179,6 +187,45 @@
     
     
 // **********************************************************************************************************************
+// *animations
+
+    $('p').fadeOut();         // speed is default 400 
+    $('p').fadeIn();          // 'slow' / 'fast can also specified in place of miliseconds number
+    $('p').fadeToggle();      // 'slow' => 200 / 'fast' => 600
+    $('p').fadeTo(400, .5);   // requires you to specify miliseconds so that opacity property is accessabe
+
+    $('p').fadeIn(250, function() {   // animations also execute callbacks
+      $(this).addClass('bold');
+    });
+
+    $('p').slideUp();    
+    $('p').slideDown(); 
+
+    $('p').slideToggle(300, 'linear', function() {  // 'linear' is an easing argument 'swing' is default
+      console.log('sliding complete');              // find more  https://api.jqueryui.com/easings/
+    ));
+
+    $('p').animate({                  // allows you to animate position
+      left: 500,
+      top: 250
+    }, 400, function() {
+      $(this).text('All done!');
+    });
+
+    $('p').slideUp(250).fadeIn();     // chaining animations
+    $('p').delay(300);                // can be used in place of setTimeout
+    $('p').stop().fadeToggle(200);    // stop multiple animations from being added to the que and only send current request
+
+    $('p').fadeIn(200).animate({       
+      top: '+=' + $('p').height(),    // allows you to animate the transition to the height by adding after each animation
+      height: 0,                      // animates until the hieght is 0 and top is the height of the $('p') element
+    }).finish();            // finish() stops all qued animations and jumps to the end of the current request immediatley 
+
+    $.fx.off = ture       // globaly turns off all animations so that their affects happen immediatley (used for testing)
+
+
+// **********************************************************************************************************************
 // *concepts
 
     $("form").get(0).reset()  // convert to dom element and reset(is a pure javascript method) to the default values
+

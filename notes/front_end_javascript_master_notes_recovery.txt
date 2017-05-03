@@ -1952,3 +1952,44 @@ jquery
                               // elements on the page
 
 
+**********************************************************************************************************************
+*annimations
+
+  default timing is usually set to 400 miliseconds but you can specify your own
+    or use 'slow' (200) / 'fast' (600)
+
+  $('p').fadeOut();        
+  $('p').fadeIn();
+  $('p').fadeToggle();
+  $('p').fadeTo(400, .5);    // requires you to specify miliseconds so that opacity property is accessabe
+
+
+  annimation properties can also be specified using an options object
+
+    $p.slideToggle({
+      duration: 400,
+      easing: 'linear',
+      complete: function() {
+        console.log('Sliding complete!');
+      }
+    });
+
+  animate is used for animating position and has two diffrent syntaxes
+  animate can be used to animate pretty much any number (px is default but em, % etc can be specified explicitly)
+
+    $p.animate({
+      left: 500,
+      top: 250
+    }, 400, function() {
+      $(this).text('All done!');
+    });
+
+    $p.animate({
+      left: 500,
+      top: 250
+    }, {
+      duration: 400,
+      complete: function() {
+        $(this).text('All done!');
+      }
+    });
